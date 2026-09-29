@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Account extends Bank{
-    private  int userPin;
+public class Account {
+    private  String userPin;
     private int userAccountBalance;
     private String userAccountName;
     private String userAccountNumber;
@@ -10,32 +11,28 @@ public class Account extends Bank{
 
 
 
-    public Account() {
-        final int accountBalance = this.userAccountBalance;
-        final String accountName = this.userAccountName;
-        final String accountNumber = this.userAccountNumber;
-        final int pin = this.userPin;
+    public Account(String customerPin) {
+       if (login(customerPin)) {
+           int accountBalance = this.userAccountBalance;
+           final String accountName = this.userAccountName;
+           final String accountNumber = this.userAccountNumber;
+       }
 
     }
 
-    public void setUserPin(int pin) {
-        if (this.userPin == ini) {
-
-        }
+    public void setUserPin(String customerPin) {
+        this.userPin = customerPin;
     }
 
-    public boolean login(int pin) {
-        if (pin == this.userPin) {
-            return
-        }
-
+    public boolean login(String customerPin) {
+        return Objects.equals(customerPin, this.userPin);
     }
 
 
     public void depositMoney(int amount) {
         try {
             if (amount > 0) {
-                this.accountBalance += amount;
+                this.userAccountBalance += amount;
 
             }
         } catch (Exception error) {
@@ -45,8 +42,8 @@ public class Account extends Bank{
 
     public int withdrawMoney(int amount) {
         try {
-            if (amount < this.accountBalance) {
-                this.accountBalance -= amount;
+            if (amount < this.userAccountBalance) {
+                this.userAccountBalance -= amount;
                 return amount;
             }
             else {

@@ -3,12 +3,13 @@ public class Customer {
     private String customerAccountNumber;
     private String customerUserID;
     private String customerPassword;
+    private Account customerAccount;
 
     public Customer() {
+        this.customerAccount = customerAccount;
         this.customerName = customerName;
         this.customerAccountNumber = customerAccountNumber;
         this.customerUserID = customerUserID;
-        this.customerPassword = customerPassword;
     }
 
     public String getCustomerName() {
@@ -23,7 +24,15 @@ public class Customer {
         return customerUserID;
     }
 
-    public String getCustomerPassword() {
-        return customerPassword;
+    public Account getCustomerAccount() {
+        return customerAccount;
+    }
+
+    public void setCustomerAccount(Account customerAccount) {
+        this.customerAccount = customerAccount;
+    }
+    
+    public void setCustomerPassword(String customerPassword) {
+        this.customerPassword = customerPassword;
     }
 }
