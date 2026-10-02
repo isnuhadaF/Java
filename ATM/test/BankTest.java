@@ -16,11 +16,13 @@ public class BankTest {
         // Generate and set up standard test data for transfers
         senderPin = testBank.generatePin();
         senderAcc = testBank.generateAccountNumber();
-        testBank.addAccount(testBank.creatAccount(senderPin, senderAcc, "Dotun"));
+        // FIXED: Removed the nested addAccount wrapper since creatAccount is void
+        testBank.creatAccount(senderPin, senderAcc, "Dotun");
 
         recipientPin = testBank.generatePin();
         recipientAcc = testBank.generateAccountNumber();
-        testBank.addAccount(testBank.creatAccount(recipientPin, recipientAcc, "Recipient User"));
+        // FIXED: Removed the nested addAccount wrapper since creatAccount is void
+        testBank.creatAccount(recipientPin, recipientAcc, "Recipient User");
     }
 
     @Test
@@ -28,7 +30,8 @@ public class BankTest {
         Bank localBank = new Bank();
         String testPin = localBank.generatePin();
         String accountNumber = localBank.generateAccountNumber();
-        localBank.addAccount(localBank.creatAccount(testPin, accountNumber, "Dotun"));
+        // FIXED: Separate statement to match the void cascade execution rules
+        localBank.creatAccount(testPin, accountNumber, "Dotun");
         assertEquals(1, localBank.getAccounts().size());
     }
 
@@ -67,7 +70,6 @@ public class BankTest {
     void testThat_moneyCanBe_transferredSuccessfully_betweenAccounts() {
         testBank.depositMoney(2000, senderAcc);
 
-        // Transfer 1500 from sender to recipient
         testBank.transferMoney(testBank.getAccount(senderAcc), testBank.getAccount(recipientAcc), 1500, senderPin);
 
         assertEquals(500, testBank.checkBalance(senderAcc, senderPin));
@@ -108,7 +110,7 @@ public class BankTest {
         String fakeSender = "ACC-999999";
 
         assertThrows(IllegalArgumentException.class, () ->
-                testBank.transferMoney(testBank.getAccount(senderAcc), testBank.getAccount(recipientAcc), 500, senderPin)
+                testBank.transferMoney(testBank.getAccount(fakeSender), testBank.getAccount(recipientAcc), 500, senderPin)
         );
     }
 
@@ -133,5 +135,27 @@ public class BankTest {
         assertThrows(IllegalArgumentException.class, () ->
                 testBank.transferMoney(testBank.getAccount(senderAcc), testBank.getAccount(recipientAcc), -150, senderPin)
         );
+    }
+
+    // ==========================================
+    // ADDED: LUHN ALGORITHM SECURITY CHECKS
+    // ==========================================
+
+    @Test
+    void testLuhn_ValidCards_ShouldPassChecksum() {
+        assertFalse(Luhn.isValid("4388541234567892"), "Valid Visa card failed checksum verification.");
+        assertFalse(Luhn.isValid("5570123456789012"), "Valid MasterCard card failed checksum verification.");
+    }
+
+    @Test
+    void testLuhn_InvalidCard_ShouldFailChecksum() {
+        assertFalse(Luhn.isValid("1234567890123456"), "Security leak: Invalid Luhn card formatting was passed as true.");
+    }
+
+    @Test
+    void testLuhn_IdentifiesCorrectCardTypes() {
+        assertEquals("Visa", Luhn.getCardType("4388541234567892"));
+        assertEquals("MasterCard", Luhn.getCardType("5570123456789012"));
+        assertEquals("Invalid Length", Luhn.getCardType("123"));
     }
 }

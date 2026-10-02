@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class AccountTest {
     private Account testAccount;
     private final String initialPin = "1234";
-    private final String initialAccNum = "12345678"; // 8 digits max as per validation
+    private final String initialAccNum = "12345678";
     private final String initialName = "Dotun";
 
     @BeforeEach
@@ -60,7 +60,7 @@ public class AccountTest {
     @Test
     void testThat_MoneyCanBe_WithdrawnSuccessfully() {
         testAccount.deposit(1000.0);
-        int withdrawnAmount = testAccount.withdraw(400.0, initialPin);
+        double withdrawnAmount = testAccount.withdraw(400.0, initialPin);
 
         assertEquals(400, withdrawnAmount);
         assertEquals(600.0, testAccount.getBalance(initialPin));
@@ -92,14 +92,11 @@ public class AccountTest {
 
     @Test
     void testThat_AccountNumberValidation_ThrowsErrorOnMismatch() {
-        assertThrows(IllegalArgumentException.class, () ->
-                testAccount.val1date("99999999")
-        );
+        assertThrows(IllegalArgumentException.class, () -> testAccount.validateAccountNumber("99999999"));
     }
 
     @Test
     void testThat_SettingUserPin_ThrowsError_IfPinAlreadyExists() {
-        // The constructor already assigns 'initialPin', so userPin is not null
         assertThrows(IllegalArgumentException.class, () ->
                 testAccount.setUserPin("5678")
         );
@@ -110,7 +107,6 @@ public class AccountTest {
         String newPin = "5678";
         testAccount.changePin(initialPin, newPin, initialAccNum);
 
-        // Old PIN should now fail, and new PIN should work
         assertThrows(IllegalArgumentException.class, () -> testAccount.getBalance(initialPin));
         assertEquals(0.0, testAccount.getBalance(newPin));
     }

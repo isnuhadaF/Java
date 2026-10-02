@@ -1,19 +1,12 @@
-
-
 public class Account {
-    private  String userPin;
+    private String userPin;
     private double accountBalance;
-    private final String accountNumber;
-    private final String fullName;
+    private static String accountNumber;
+    private String username;
+    private Card card;
 
-    public Account(String defaultPin, String accNum, String name) {
-        validatelength(defaultPin);
-        val1dateLength(accNum);
-         this.userPin = defaultPin; this.accountNumber = accNum; this.fullName = name;
-    }
-
-    private String getPin() {
-        return userPin;
+    public Account(Card userCard, String username) {
+        
     }
 
     public double getBalance(String userPin) {
@@ -26,8 +19,7 @@ public class Account {
     }
 
     public String getFullName() {
-        return this.fullName;
-
+        return this.username;
     }
 
     public void deposit(double amount) {
@@ -35,55 +27,60 @@ public class Account {
         accountBalance += amount;
     }
 
-    public int withdraw(double amount, String pin) {
+    public double withdraw(double amount, String pin) {
         validate(pin);
         validate(amount);
-        boolean isTransactionValid = amount <= accountBalance;
-        if (isTransactionValid) { accountBalance -= amount; return (int) amount; }
-        else throw new IllegalArgumentException("Insufficient funds");
+        if (amount > accountBalance) {
+            throw new IllegalArgumentException("Insufficient funds");
+        }
+        accountBalance -= amount;
+        return amount;
     }
 
-    private void validate(String pin) {
+    public void validate(String pin) {
         if (!pin.equals(userPin)) throw new IllegalArgumentException("Invalid pin");
     }
 
-    private void validate(double amount) {
-        if (amount < 0) throw new IllegalArgumentException("Invalid amount");
+    public void validate(double amount) {
+        if (amount <= 0) throw new IllegalArgumentException("Invalid amount. Must be greater than zero.");
     }
 
-    public void val1date(String accNum) {
+    public void validateAccountNumber(String accNum) {
+        validateAccountNumberLength(accNum);
         if (!accNum.equals(this.accountNumber)) throw new IllegalArgumentException("Invalid account number");
     }
 
     private boolean checkUserHasPin() {
-        if (userPin != null) {throw new IllegalArgumentException("A pin already exists for this account");}
-        else return false;
+        return userPin != null;
     }
 
     public void setUserPin(String customerPin) {
-        if (checkUserHasPin()) {throw new IllegalArgumentException("You already have a pin set");}
-        else this.userPin = customerPin;
+        validateLength(customerPin);
+        if (checkUserHasPin()) {
+            throw new IllegalArgumentException("You already have a pin set");
+        }
+        this.userPin = customerPin;
     }
 
-    private void validatelength(String pin) {
-        if (pin.length() != 4) {
-            throw new IllegalArgumentException("Your PIN should be 4 characters long");
+    private void validateLength(String pin) {
+        if (pin == null || pin.length() != 4) {
+            throw new IllegalArgumentException("Your PIN should be exactly 4 characters long");
         }
     }
 
-    private void val1dateLength(String accNumber) {
-        if (accNumber.length() > 8) {
-            throw new IllegalArgumentException("Your PIN should be 4 characters long");
+    private void validateAccountNumberLength(String accNumber) {
+        if (accNumber == null || accNumber.length() > 8) {
+            throw new IllegalArgumentException("Your Account Number should be maximum 8 characters long");
         }
     }
 
     public void changePin(String oldPin, String newPin, String accNumber) {
-        val1date(accNumber);
+        validateAccountNumber(accNumber);
         validate(oldPin);
+        validateLength(newPin);
         if (oldPin.equals(newPin)) {
-            throw new IllegalArgumentException("Invalid P.I.N");
-        } else if (newPin.length() > 4) {
-           throw new IllegalArgumentException("Your new P.I.N should only be 4 digits");
-        } this.userPin = newPin;
+            throw new IllegalArgumentException("Invalid P.I.N: New PIN cannot match the old one.");
+        }
+        this.userPin = newPin;
     }
 }
