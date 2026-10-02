@@ -14,7 +14,7 @@ public class Bank {
         String accountNumber = generate(fullName);
 
         String generatedCardNumber = generate(random);
-        String generatedExpiry = "12/31";
+        String generatedExpiry = random.nextInt(13) + "/" + random.nextInt(31);
         int generatedCvv = 100 + random.nextInt(900);
         String generatedPin = generate();
 
@@ -37,12 +37,10 @@ public class Bank {
         System.out.println("=============================================");
     }
     public void depositMoney(double amount, Card card) {
-        // Blocks an attacker from passing an arbitrary account ID string
         Account account = getAccountByCardNumber(card.getCardNumber());
         account.deposit(amount);
     }
     public double withdrawMoney(double amount, Card card, String pin) {
-        // Crucial Fix: Card will refuse to return the account reference unless PIN matches
         Account account = card.getAuthorizedAccount(pin);
         return account.withdraw(amount, pin);
     }
@@ -137,13 +135,6 @@ public class Bank {
             generatedPin.append(random.nextInt(10));
         }
         return generatedPin.toString();
-    }
-
-    public void set(Random expiry) {
-        
-
-
-
     }
 
     public List<Account> getAccounts() {

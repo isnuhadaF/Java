@@ -1,7 +1,7 @@
 public class ATM {
     private Bank bank;
     private double atmBalance;
-    private Card insertedCard; // Active hardware slot tracker
+    private Card insertedCard;
 
     public ATM(Bank scotiaBank, double cash) {
         this.bank = scotiaBank;
@@ -18,12 +18,10 @@ public class ATM {
     }
 
     public double withdraw(Double amount, String pin) {
-        // IDOR Check 1: Ensure a card session is actually sitting in the hardware slot
         if (insertedCard == null) {
             throw new IllegalStateException("Transaction Denied: No card session detected.");
         }
 
-        // IDOR Check 2: Pass the pin down to authorize the direct object reference resolution
         Account account = insertedCard.getAuthorizedAccount(pin);
 
         account.validate(amount);
@@ -41,7 +39,6 @@ public class ATM {
             throw new IllegalStateException("No active card session.");
         }
 
-        // Enforces access control right at the fetch step
         return insertedCard.getAuthorizedAccount(pin).getBalance(pin);
     }
 }

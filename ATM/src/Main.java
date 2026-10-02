@@ -2,20 +2,16 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // 1. Set up our central bank and keyboard scanner for input
         Bank scotiaBank = new Bank();
         Scanner keyboard = new Scanner(System.in);
         Luhn luhnCheck = new Luhn();
 
-        // We create test accounts using your standard constructor parameters
         scotiaBank.creatAccount("1111", "12345678", "Alice Smith");
         scotiaBank.creatAccount("2222", "87654321", "Bob Jones");
 
-        // Give them some starting cash to run transactions
         scotiaBank.getAccount("12345678").deposit(1500.00);
         scotiaBank.getAccount("87654321").deposit(500.00);
 
-        // 2. Provision the ATM loaded with $5,000 physical cash reserves
         ATM atmTerminal = new ATM(scotiaBank, 5000.00);
 
         boolean keepAtmRunning = true;
@@ -25,7 +21,6 @@ public class Main {
             System.out.println("          WELCOME TO SCOTIABANK ATM          ");
             System.out.println("=============================================");
 
-            // Check if the ATM has physical cash left inside the machine safe
             try {
                 atmTerminal.validate();
             } catch (IllegalArgumentException e) {
@@ -34,11 +29,9 @@ public class Main {
                 break;
             }
 
-            // --- STEP 1: PHYSICAL CARD SWIPE (THE CARD ENTITY) ---
             System.out.print("Please swipe or enter your 16-Digit CARD NUMBER: ");
             String inputCardNumber = keyboard.nextLine();
 
-            // Run the Luhn validation on the card entity before looking at the bank database
             try {
                 if (!luhnCheck.isValid(inputCardNumber)) {
                     throw new IllegalArgumentException("Invalid card number format check. Card ejected.");
@@ -47,10 +40,9 @@ public class Main {
                 System.out.println("[ATM STATUS] " + cardType + " detected. Chip read successful!");
             } catch (IllegalArgumentException e) {
                 System.out.println("\n[TERMINAL REJECTION] " + e.getMessage());
-                continue; // Instantly kicks user back to the welcome screen
+                continue;
             }
 
-            // --- STEP 2: ACCOUNT SELECTION (THE ACCOUNT ENTITY) ---
             System.out.print("Please enter the ACCOUNT NUMBER linked to this card: ");
             String accountNumberInput = keyboard.nextLine();
 
@@ -64,12 +56,10 @@ public class Main {
                 continue;
             }
 
-            // --- STEP 3: SECURITY PIN CHALLENGE ---
             System.out.print("Please enter your 4-digit PIN: ");
             String pinInput = keyboard.nextLine();
 
             try {
-                // Verify the pin works with this specific account profile
                 atmTerminal.viewBalance(currentUser, pinInput);
             } catch (IllegalArgumentException e) {
                 System.out.println("\n[SECURITY FAILURE] " + e.getMessage());
@@ -77,7 +67,6 @@ public class Main {
                 continue;
             }
 
-            // --- STEP 4: INTERACTIVE TRANSACTION MENU ---
             boolean userIsLoggedIn = true;
             System.out.printf("%nHello, %s!%n", currentUser.getFullName());
 
