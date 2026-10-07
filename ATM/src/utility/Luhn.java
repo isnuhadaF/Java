@@ -1,4 +1,6 @@
-public class Luhn {
+package utility;
+
+public final class Luhn {
 
     public static String getCardType(String cardNumber) {
         int length = cardNumber.length();
