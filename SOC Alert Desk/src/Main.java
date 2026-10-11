@@ -2,8 +2,6 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.Deque;
 import java.util.Queue;
-import java.util.Set;
-import java.util.Map;
 
 //ArrayList
 //(7)
@@ -64,7 +62,7 @@ void main(String[] args) {
 
 
 
-   //LinkedList
+   //LinkedList.LinkedList
     List<String> asList = new LinkedList<>();
     Deque<String> asDeque = new LinkedList<>();
     Queue<String> asQueue = new LinkedList<>();
