@@ -11,7 +11,6 @@ public final class Samples {
     public static List<Alert> load() {
         List<Alert> alerts = new ArrayList<>();
 
-        // Day 1 (Oct 11), not in time order on purpose
         alerts.add(alert("A-01", "203.0.113.7",   Type.BRUTE_FORCE,      3, at(11, 9, 15),  "Repeated failed VPN logins"));
         alerts.add(alert("A-02", "10.0.0.5",      Type.PHISHING,         2, at(11, 8, 40),  "Fake invoice email reported"));
         alerts.add(alert("A-03", "203.0.113.7",   Type.BRUTE_FORCE,      4, at(11, 9, 45),  "Failed logins continue"));
@@ -23,7 +22,6 @@ public final class Samples {
         alerts.add(alert("A-09", "203.0.113.44",  Type.MALWARE,          3, at(11, 13, 25), "Suspicious download blocked"));
         alerts.add(alert("A-10", "198.51.100.23", Type.PORT_SCAN,        2, at(11, 7, 55),  "Port probe repeated"));
 
-        // Day 2 (Oct 12)
         alerts.add(alert("A-12", "203.0.113.7",   Type.BRUTE_FORCE,      4, at(12, 8, 10),  "Attack on the admin portal"));
         alerts.add(alert("A-13", "10.0.0.5",      Type.PHISHING,         1, at(12, 9, 0),   "Low-risk spam link"));
         alerts.add(alert("A-14", "192.168.1.20",  Type.BRUTE_FORCE,      3, at(12, 10, 30), "Failed SSH logins"));
@@ -32,20 +30,17 @@ public final class Samples {
         alerts.add(alert("A-17", "198.51.100.99", Type.PORT_SCAN,        1, at(12, 13, 5),  "Single probe, no follow-up"));
         alerts.add(alert("A-18", "10.0.0.77",     Type.PHISHING,         3, at(12, 14, 20), "Credential-harvesting page visited"));
 
-        // Same id as A-12, sent twice by the sensor on purpose. Stage 2 removes it.
         alerts.add(alert("A-12", "203.0.113.7",   Type.BRUTE_FORCE,      4, at(12, 8, 12),  "Same alert, re-sent by the sensor"));
 
-        // Severity 5, and the latest timestamp of all
         alerts.add(alert("A-19", "192.168.1.20",  Type.DATA_EXFILTRATION, 5, at(12, 17, 45), "Large transfer at end of day"));
 
         return alerts;
     }
 
-    private static LocalDateTime at(int dayOfOctober, int hour, int minute) {
-        return LocalDateTime.of(2026, 10, dayOfOctober, hour, minute);
+    private static LocalDateTime at(int dayOfMonth, int hour, int minute) {
+        return LocalDateTime.of(2026, 10, dayOfMonth, hour, minute);
     }
 
-    // The only place that calls the Alert constructor
     private static Alert alert(String id, String ip, Type type, int severity, LocalDateTime timeStamp, String note) {
         return new Alert(id, ip, type, severity, note, timeStamp);
     }
