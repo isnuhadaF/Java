@@ -347,11 +347,3 @@ Tests follow one rule: each test exists to show how a data structure behaves, no
 One test class per production class, plus a small end-to-end test of the whole pipeline.
 
 > Status: tests in progress.
-
-## What I would add next
-
-- Read real log files (`auth.log`, Windows event exports) instead of hard-coded samples.
-- Add a detection rule, such as five failed logins from one IP within ten minutes, using a `Deque` as a sliding time window.
-- Make `Log.getAlertID` O(1) with a `HashMap<String, Alert>`.
-- Fix starvation in `Urgent` by raising an alert's priority the longer it waits.
-- Save the log to a file and load it at startup.
