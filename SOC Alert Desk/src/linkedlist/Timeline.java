@@ -23,7 +23,6 @@ public class Timeline {
         return new ArrayList<>(alertsForIp);
     }
 
-    // Time: O(n) to find earlierAlert, O(1) to insert. Space: O(1).
     public void insertAfter(Alert earlierAlert, Alert lateAlert) {
         if (!earlierAlert.getSourceIP().equals(lateAlert.getSourceIP())) {
             throw new IllegalArgumentException("Alerts come from different IPs");

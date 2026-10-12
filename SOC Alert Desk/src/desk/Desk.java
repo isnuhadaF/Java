@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class Desk {
     private final Log log;
-    private final Inbox inbox = new Urgent();   // the one-line switch: new Oldest()
+    private final Inbox inbox = new Urgent();
     private final Filter filter;
     private final Session session;
 
@@ -88,7 +88,7 @@ public class Desk {
     private void showTimeline(Scanner input) {
         System.out.print("IP: ");
         String ip = input.nextLine().trim();
-        List<Alert> alertsForIp = new Timeline(session).timelineFor(ip);   // built now, not at startup
+        List<Alert> alertsForIp = new Timeline(session).timelineFor(ip);
         if (alertsForIp.isEmpty()) {
             System.out.println("No handled alerts for that IP.");
         }

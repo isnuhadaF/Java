@@ -10,8 +10,7 @@ public final class Alert {
     private final String description;
     private final LocalDateTime timestamp;
 
-    public Alert(String id, String sourceIP, Type alertType, int severity,
-                 String description, LocalDateTime timestamp) {
+    public Alert(String id, String sourceIP, Type alertType, int severity, String description, LocalDateTime timestamp) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("id cannot be empty");
         }
