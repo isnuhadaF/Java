@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,8 +43,10 @@ public class LogTest {
     void removingByIDShrinksLogBy_1_andReturnsFalseForUnknownID() {
         Log log = new Log(new ArrayList<>());
         log.addAll();
-        log.removeByID("A-01");
 
+        try {
+            log.removeBy("A-01");
+        } catch (ConcurrentModificationException c) {throw new ConcurrentModificationException("Did not work");}
         assertEquals(18, log.getAlerts().size());
     }
 }

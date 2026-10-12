@@ -1,22 +1,27 @@
 package arraylist;
+
+import alert.Alert;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import alert.Alert;
-import alert.Samples;
-
 public class Log {
-    private List<Alert> alerts = new ArrayList<>();
+    private final List<Alert> alerts;
 
     public Log(List<Alert> alerts) {
-        this.alerts = alerts;
+        this.alerts = new ArrayList<>(alerts);
     }
+
     public void addAlert(Alert alert) {
-        if (alerts.contains(alert)) throw new IllegalArgumentException("Alert already exists");
-        if (alert == null) throw new IllegalArgumentException("Alert is empty");
+        if (alert == null) {
+            throw new IllegalArgumentException("Alert is empty");
+        }
         alerts.add(alert);
+    }
+
+    public void addAll(List<Alert> newAlerts) {
+        alerts.addAll(newAlerts);
     }
 
     public int count() {
@@ -24,29 +29,39 @@ public class Log {
     }
 
     public Alert getAlertID(String id) {
-        for (Alert alert:alerts) {
-            if (alert.getId().equals(id)) { return alert; } else throw  new IllegalArgumentException("Alert " + id + " not found");
+        for (Alert alert : alerts) {
+            if (alert.getId().equals(id)) {
+                return alert;
+            }
         }
-        return null;
+        throw new IllegalArgumentException("Alert " + id + " not found");
     }
 
-    public void removeByID(String id) {
-        for (Alert alert:alerts) {
-            if (alert.getId().equals(id)) {  alerts.remove(alert);}
-            else throw  new IllegalArgumentException("Alert " + id + " not found");
+    public void removeBy(String id) {
+        boolean wasRemoved = alerts.removeIf(alert -> alert.getId().equals(id));
+        if (!wasRemoved) {
+            throw new IllegalArgumentException("Alert " + id + " not found");
         }
-
     }
 
-    public List<Alert> sortSeverity(int severity) {
-        List<Alert> filteredAlerts = new ArrayList<>(List.copyOf(alerts));
-        filteredAlerts.sort(Comparator.comparing(Alert::getSeverity));
+    public List<Alert> severityFilter(int minSeverity) {
+        List<Alert> matchingAlerts = new ArrayList<>();
+        for (Alert alert : alerts) {
+            if (alert.getSeverity() >= minSeverity) {
+                matchingAlerts.add(alert);
+            }
+        }
+        return matchingAlerts;
+    }
 
-        return filteredAlerts;
+    public List<Alert> sortBySeverity() {
+        List<Alert> sortedAlerts = new ArrayList<>(alerts);
+        sortedAlerts.sort(Comparator.comparing(Alert::getSeverity).reversed());
+        return sortedAlerts;
     }
 
     public List<Alert> sortByTime() {
-        List<Alert> sortedAlerts = new ArrayList<>(List.copyOf(alerts));
+        List<Alert> sortedAlerts = new ArrayList<>(alerts);
         sortedAlerts.sort(Comparator.comparing(Alert::getTimestamp));
         return sortedAlerts;
     }
@@ -54,9 +69,4 @@ public class Log {
     public List<Alert> getAlerts() {
         return List.copyOf(alerts);
     }
-
-    public void addAll() {
-        this.alerts = Samples.load();
-    }
-
 }
